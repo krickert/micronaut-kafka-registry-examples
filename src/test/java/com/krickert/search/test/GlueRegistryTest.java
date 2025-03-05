@@ -3,29 +3,39 @@ package com.krickert.search.test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
+import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.glue.GlueClient;
 import software.amazon.awssdk.services.glue.model.GetDatabasesRequest;
 import software.amazon.awssdk.services.glue.model.GetDatabasesResponse;
 
 import java.net.URI;
+import java.time.Duration;
+import java.util.Map;
 
 @Testcontainers
 public class GlueRegistryTest {
-
+    private static final Logger log = LoggerFactory.getLogger(GlueRegistryTest.class);
     // Use a Moto container with a command that starts the Glue service.
     // We specify the command arguments explicitly and use a log-based wait strategy.
     @Container
-    public static GenericContainer<?> motoGlue = new GenericContainer<>("motoserver/moto:latest")
+    public static GenericContainer<?> motoGlue = new GenericContainer<>(DockerImageName.parse("motoserver/moto:latest"))
             .withExposedPorts(5000)
-            // Adjust the command ordering if necessary.
-            .withCommand("moto_server", "glue", "-H", "0.0.0.0", "-p", "5000")
-            // Instead of waiting for a log message, wait for the port to be listening.
-            .waitingFor(Wait.forListeningPort());
+            .withAccessToHost(true)
+            .withCommand("-H0.0.0.0")
+            .withEnv(Map.of(
+                    "MOTO_SERVICE", "glue",
+                    "TEST_SERVER_MODE", "true"
+            ))
+            .withStartupTimeout(Duration.ofSeconds(30))
+            .withReuse(true);
+
 
     @BeforeAll
     public static void setup() {
@@ -37,7 +47,7 @@ public class GlueRegistryTest {
         // Compute and set the Glue endpoint based on the container’s mapped port.
         String endpoint = "http://" + motoGlue.getHost() + ":" + motoGlue.getMappedPort(5000);
         System.setProperty("aws.glue.endpoint", endpoint);
-        System.out.println("Using Moto Glue endpoint: " + endpoint);
+        log.info("Using Moto Glue endpoint: " + endpoint);
     }
 
     @Test
@@ -58,10 +68,9 @@ public class GlueRegistryTest {
         // so an exception here might be expected.
         try {
             GetDatabasesResponse response = glueClient.getDatabases(GetDatabasesRequest.builder().build());
-            System.out.println("Glue getDatabases succeeded: " + response);
+            log.info("Glue getDatabases succeeded: " + response);
         } catch (Exception e) {
-            System.out.println("Glue getDatabases operation resulted in an exception: " + e.getMessage());
-            // Optionally, you can assert that the exception is one you expect due to unimplemented API
+            Assertions.fail("Glue getDatabases operation resulted in an exception", e);
         }
     }
 }
