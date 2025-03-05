@@ -1,0 +1,6 @@
+applicationType: messaging
+defaultPackage: com.krickert.search.test
+testFramework: junit
+sourceLanguage: java
+buildTool: gradle_kotlin
+features: [annotation-api, app-name, assertj, awaitility, aws-v2-sdk, gradle, http-client-test, java, java-application, junit, kafka, logback, lombok, micronaut-build, properties, readme, serialization-jackson, shade, test-resources, testcontainers]
