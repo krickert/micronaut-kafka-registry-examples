@@ -17,6 +17,7 @@ val glueSchemaRegistryVersion: String by project
 val mskIamAuthVersion: String by project
 val awsSdkVersion: String by project
 val awaitilityVersion: String by project
+val apicurioVersion: String by project
 
 dependencies {
     // Define the constraints for all dependencies that should be part of the BOM
@@ -25,11 +26,18 @@ dependencies {
         api(project(":"))
         // Schema Registry Moto Implementation
         api(project(":micronaut-kafka-registry-moto"))
+        // Schema Registry Apicurio Implementation
+        api(project(":micronaut-kafka-registry-apicurio"))
 
         // AWS dependencies
         api("software.amazon.glue:schema-registry-serde:$glueSchemaRegistryVersion")
         api("software.amazon.msk:aws-msk-iam-auth:$mskIamAuthVersion")
         api("software.amazon.awssdk:url-connection-client:$awsSdkVersion")
+
+        // Apicurio dependencies
+        api("io.apicurio:apicurio-registry-serdes-protobuf-serde:$apicurioVersion")
+        api("io.apicurio:apicurio-registry-client:$apicurioVersion")
+        api("io.apicurio:apicurio-registry-utils-kafka:$apicurioVersion")
 
         // Protobuf and gRPC
         api("com.google.protobuf:protobuf-java:$protobufVersion")

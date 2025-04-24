@@ -12,6 +12,9 @@ pluginManagement {
 dependencyResolutionManagement {
     repositories {
         mavenCentral()
+        // Add JBoss Maven repository for Apicurio artifacts
+        maven { url = uri("https://repository.jboss.org/nexus/content/repositories/releases") }
+        maven { url = uri("https://repository.jboss.org/nexus/content/groups/public") }
     }
 }
 
@@ -19,3 +22,4 @@ dependencyResolutionManagement {
 include("bom")
 include("micronaut-kafka-registry-core")
 include("micronaut-kafka-registry-moto")
+include("micronaut-kafka-registry-apicurio")
