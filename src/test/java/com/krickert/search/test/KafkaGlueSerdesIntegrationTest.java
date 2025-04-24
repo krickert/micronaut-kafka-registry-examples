@@ -1,9 +1,9 @@
 package com.krickert.search.test;
 
-import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryKafkaDeserializer;
-import com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer;
+import com.krickert.search.test.kafka.AbstractKafkaTest;
 import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
 import com.krickert.search.model.pipe.PipeDoc;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
@@ -16,10 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.testcontainers.kafka.KafkaContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.services.glue.model.Compatibility;
 
 import java.time.Duration;
@@ -28,28 +25,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Testcontainers
-public class KafkaGlueSerdesIntegrationTest extends AbstractMotoTest {
+@MicronautTest(environments = "test")
+public class KafkaGlueSerdesIntegrationTest extends AbstractKafkaTest {
 
     public static final Logger log = LoggerFactory.getLogger(KafkaGlueSerdesIntegrationTest.class);
 
-    // Use the vanilla Apache Kafka image through Testcontainers' KafkaContainer.
-    @Container
-    public static KafkaContainer kafka = new KafkaContainer(DockerImageName.parse("apache/kafka:3.7.2"));
-
     @Test
     public void testKafkaProducerConsumerWithGlueSerdes() {
+        // Ensure schema registry is started
+        schemaRegistry.start();
+
         // Log current configuration.
-        log.info("Kafka bootstrap servers: {}", kafka.getBootstrapServers());
-        log.info("AWS Glue endpoint from system property: {}", System.getProperty(AWSSchemaRegistryConstants.AWS_ENDPOINT));
+        log.info("Kafka bootstrap servers: {}", getBootstrapServers());
+        log.info("AWS Glue endpoint: {}", schemaRegistry.getEndpoint());
 
         // Configure Kafka Producer properties.
         Map<String, Object> producerProps = new HashMap<>();
-        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        producerProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         producerProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
-        producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, GlueSchemaRegistryKafkaSerializer.class.getName());
+        producerProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, schemaRegistry.getSerializerClass());
         producerProps.put(AWSSchemaRegistryConstants.AWS_REGION, "us-east-1");
-        producerProps.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, System.getProperty(AWSSchemaRegistryConstants.AWS_ENDPOINT));
-        producerProps.put(AWSSchemaRegistryConstants.REGISTRY_NAME, "default");
+        producerProps.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, schemaRegistry.getEndpoint());
+        producerProps.put(AWSSchemaRegistryConstants.REGISTRY_NAME, schemaRegistry.getRegistryName());
         producerProps.put(AWSSchemaRegistryConstants.DATA_FORMAT, "PROTOBUF");
         producerProps.put(AWSSchemaRegistryConstants.PROTOBUF_MESSAGE_TYPE, "POJO");
         producerProps.put(AWSSchemaRegistryConstants.COMPATIBILITY_SETTING, Compatibility.FULL);
@@ -59,14 +56,14 @@ public class KafkaGlueSerdesIntegrationTest extends AbstractMotoTest {
 
         // Configure Kafka Consumer properties.
         Map<String, Object> consumerProps = new HashMap<>();
-        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, kafka.getBootstrapServers());
+        consumerProps.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, getBootstrapServers());
         consumerProps.put(ConsumerConfig.GROUP_ID_CONFIG, "test-group");
         consumerProps.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest");
         consumerProps.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
-        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, GlueSchemaRegistryKafkaDeserializer.class.getName());
+        consumerProps.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, schemaRegistry.getDeserializerClass());
         consumerProps.put(AWSSchemaRegistryConstants.AWS_REGION, "us-east-1");
-        consumerProps.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, System.getProperty(AWSSchemaRegistryConstants.AWS_ENDPOINT));
-        consumerProps.put(AWSSchemaRegistryConstants.REGISTRY_NAME, "default");
+        consumerProps.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, schemaRegistry.getEndpoint());
+        consumerProps.put(AWSSchemaRegistryConstants.REGISTRY_NAME, schemaRegistry.getRegistryName());
         consumerProps.put(AWSSchemaRegistryConstants.DATA_FORMAT, "PROTOBUF");
         consumerProps.put(AWSSchemaRegistryConstants.PROTOBUF_MESSAGE_TYPE, "POJO");
         consumerProps.put(AWSSchemaRegistryConstants.SCHEMA_AUTO_REGISTRATION_SETTING, "true");
@@ -113,5 +110,4 @@ public class KafkaGlueSerdesIntegrationTest extends AbstractMotoTest {
         producer.close();
         consumer.close();
     }
-
 }

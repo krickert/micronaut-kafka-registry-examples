@@ -1,9 +1,12 @@
 package com.krickert.search.test;
 
 import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryKafkaDeserializer;
+import com.krickert.search.test.kafka.registry.SchemaRegistry;
 import com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer;
 import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
 import com.krickert.search.model.pipe.PipeDoc;
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
@@ -17,16 +20,23 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 // This test demonstrates using Protocol Buffers as the serialization format.
 @Testcontainers
-public class GlueSerializerDeserializerProtobufTest extends AbstractMotoTest {
+@MicronautTest(environments = "test")
+public class GlueSerializerDeserializerProtobufTest {
     public static final Logger log = LoggerFactory.getLogger(GlueSerializerDeserializerProtobufTest.class);
+
+    @Inject
+    private SchemaRegistry schemaRegistry;
 
     @Test
     public void testGlueSerializerAndDeserializerProtobuf() {
+        // Ensure schema registry is started
+        schemaRegistry.start();
+
         // Prepare a configuration map for the serializer/deserializer.
         Map<String, Object> configs = new HashMap<>();
         configs.put(AWSSchemaRegistryConstants.AWS_REGION, "us-east-1");
-        configs.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, System.getProperty(AWSSchemaRegistryConstants.AWS_ENDPOINT));
-        configs.put(AWSSchemaRegistryConstants.REGISTRY_NAME, "default");
+        configs.put(AWSSchemaRegistryConstants.AWS_ENDPOINT, schemaRegistry.getEndpoint());
+        configs.put(AWSSchemaRegistryConstants.REGISTRY_NAME, schemaRegistry.getRegistryName());
         // Specify that the data format should be Protocol Buffers.
         configs.put(AWSSchemaRegistryConstants.DATA_FORMAT, "PROTOBUF");
         configs.put(AWSSchemaRegistryConstants.PROTOBUF_MESSAGE_TYPE, "POJO");
@@ -58,5 +68,4 @@ public class GlueSerializerDeserializerProtobufTest extends AbstractMotoTest {
             fail("Exception during round-trip test", e);
         }
     }
-
 }
