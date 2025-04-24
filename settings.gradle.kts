@@ -1,5 +1,5 @@
 
-rootProject.name="micronaut-moto-glue-msk"
+rootProject.name="micronaut-kafka-registry"
 
 pluginManagement {
     repositories {
@@ -17,5 +17,6 @@ dependencyResolutionManagement {
 
 // Include BOM and core projects
 include("bom")
-include("micronaut-moto-glue-msk-core")
-include("micronaut-moto-glue-msk-schema-registry")
+include("micronaut-kafka-registry-core")
+include("micronaut-kafka-registry-interface")
+include("micronaut-kafka-registry-moto")

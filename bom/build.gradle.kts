@@ -25,7 +25,10 @@ dependencies {
         api(project(":"))
 
         // Schema Registry Interface
-        api(project(":micronaut-moto-glue-msk-schema-registry"))
+        api(project(":micronaut-kafka-registry-interface"))
+
+        // Schema Registry Moto Implementation
+        api(project(":micronaut-kafka-registry-moto"))
 
         // AWS dependencies
         api("software.amazon.glue:schema-registry-serde:$glueSchemaRegistryVersion")
@@ -63,9 +66,9 @@ publishing {
             from(components["javaPlatform"])
 
             pom {
-                name.set("Micronaut Moto Glue MSK BOM")
-                description.set("Bill of Materials for Micronaut Moto Glue MSK")
-                url.set("https://github.com/yourusername/micronaut-moto-glue-msk")
+                name.set("Micronaut Kafka Registry BOM")
+                description.set("Bill of Materials for Micronaut Kafka Registry")
+                url.set("https://github.com/yourusername/micronaut-kafka-registry")
 
                 licenses {
                     license {
@@ -82,9 +85,9 @@ publishing {
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/yourusername/micronaut-moto-glue-msk.git")
-                    developerConnection.set("scm:git:ssh://github.com/yourusername/micronaut-moto-glue-msk.git")
-                    url.set("https://github.com/yourusername/micronaut-moto-glue-msk")
+                    connection.set("scm:git:git://github.com/yourusername/micronaut-kafka-registry.git")
+                    developerConnection.set("scm:git:ssh://github.com/yourusername/micronaut-kafka-registry.git")
+                    url.set("https://github.com/yourusername/micronaut-kafka-registry")
                 }
             }
         }
@@ -93,7 +96,7 @@ publishing {
     repositories {
         maven {
             name = "GitHubPackages"
-            url = uri("https://maven.pkg.github.com/yourusername/micronaut-moto-glue-msk")
+            url = uri("https://maven.pkg.github.com/yourusername/micronaut-kafka-registry")
             credentials {
                 username = project.findProperty("gpr.user") as String? ?: System.getenv("GITHUB_USERNAME")
                 password = project.findProperty("gpr.key") as String? ?: System.getenv("GITHUB_TOKEN")

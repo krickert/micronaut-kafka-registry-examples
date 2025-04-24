@@ -2,7 +2,7 @@
 allprojects {
     group = "com.krickert.search.test"
     version = "1.0.0-SNAPSHOT"
-    
+
     repositories {
         mavenLocal()
         maven("https://maven-central.storage-download.googleapis.com/maven2/")
@@ -22,6 +22,8 @@ allprojects {
 }
 
 tasks.register("publishAll") {
-    dependsOn(":micronaut-moto-glue-msk-bom:publish")
-    dependsOn(":micronaut-kafka-test-core:publish")
+    dependsOn(":bom:publish")
+    dependsOn(":micronaut-kafka-registry-core:publish")
+    dependsOn(":micronaut-kafka-registry-interface:publish")
+    dependsOn(":micronaut-kafka-registry-moto:publish")
 }
