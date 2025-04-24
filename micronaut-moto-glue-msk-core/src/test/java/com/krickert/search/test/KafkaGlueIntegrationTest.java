@@ -1,7 +1,7 @@
 package com.krickert.search.test;
 
 import com.krickert.search.model.pipe.PipeDoc;
-import com.krickert.search.test.kafka.AbstractKafkaTest;
+import kafka.AbstractKafkaTest;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;

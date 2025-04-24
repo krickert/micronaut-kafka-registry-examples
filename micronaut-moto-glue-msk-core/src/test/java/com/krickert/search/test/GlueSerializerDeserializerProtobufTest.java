@@ -1,7 +1,7 @@
 package com.krickert.search.test;
 
 import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryKafkaDeserializer;
-import com.krickert.search.test.kafka.registry.SchemaRegistry;
+import kafka.registry.SchemaRegistry;
 import com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer;
 import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
 import com.krickert.search.model.pipe.PipeDoc;

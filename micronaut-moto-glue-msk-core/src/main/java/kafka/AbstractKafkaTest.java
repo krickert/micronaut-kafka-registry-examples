@@ -1,7 +1,8 @@
-package com.krickert.search.test.kafka;
+package kafka;
 
-import com.krickert.search.test.kafka.registry.SchemaRegistry;
-import com.krickert.search.test.kafka.registry.moto.MotoSchemaRegistry;
+import kafka.registry.SchemaRegistry;
+import kafka.registry.SchemaRegistryFactory;
+import io.micronaut.context.ApplicationContext;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.test.support.TestPropertyProvider;
 import jakarta.inject.Inject;
@@ -57,7 +58,15 @@ public abstract class AbstractKafkaTest implements TestPropertyProvider {
         // Create a local SchemaRegistry if injection hasn't happened yet
         SchemaRegistry registry = schemaRegistry;
         if (registry == null) {
-            registry = new MotoSchemaRegistry();
+            // Create a temporary ApplicationContext to get the SchemaRegistry
+            ApplicationContext context = ApplicationContext.builder().build();
+            context.start();
+            try {
+                SchemaRegistryFactory factory = context.getBean(SchemaRegistryFactory.class);
+                registry = factory.schemaRegistry("moto");
+            } finally {
+                context.close();
+            }
         }
 
         // Ensure schema registry is started

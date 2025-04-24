@@ -1,14 +1,12 @@
-package com.krickert.search.test.kafka.registry.moto;
+package kafka.registry.moto;
 
 import com.amazonaws.services.schemaregistry.deserializers.GlueSchemaRegistryKafkaDeserializer;
 import com.amazonaws.services.schemaregistry.serializers.GlueSchemaRegistryKafkaSerializer;
 import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
-import com.krickert.search.test.kafka.registry.SchemaRegistry;
+import kafka.registry.SchemaRegistry;
 import io.micronaut.context.annotation.Requires;
 import jakarta.inject.Singleton;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.annotation.Order;
-import io.micronaut.core.order.Ordered;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testcontainers.containers.GenericContainer;
