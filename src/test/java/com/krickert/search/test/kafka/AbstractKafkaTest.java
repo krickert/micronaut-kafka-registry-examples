@@ -1,6 +1,5 @@
 package com.krickert.search.test.kafka;
 
-import com.amazonaws.services.schemaregistry.utils.AWSSchemaRegistryConstants;
 import com.krickert.search.test.kafka.registry.SchemaRegistry;
 import com.krickert.search.test.kafka.registry.moto.MotoSchemaRegistry;
 import io.micronaut.core.annotation.NonNull;
@@ -40,6 +39,7 @@ public abstract class AbstractKafkaTest implements TestPropertyProvider {
 
     @BeforeAll
     public static void setupKafka() {
+        log.info("Setup Kafka container...");
         // Kafka setup is handled by the container
     }
 

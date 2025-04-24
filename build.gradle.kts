@@ -1,11 +1,10 @@
 plugins {
-    id("com.github.johnrengelman.shadow") version "8.1.1"
-    id("io.micronaut.application") version "4.4.4"
-    id("io.micronaut.test-resources") version "4.4.4"
-    id("com.google.protobuf") version "0.9.4"
+    id("io.micronaut.library") version "4.5.0"
+    id("io.micronaut.test-resources") version "4.5.0"
+    id("com.google.protobuf") version "0.9.5"
 }
 var protobufVersion = "3.25.6"
-var grpcVersion = "1.70.0"
+var grpcVersion = "1.72.0"
 
 version = "1.0.0-SNAPSHOT"
 group = "com.krickert.search.test"
@@ -65,10 +64,6 @@ dependencies {
 
 }
 
-
-application {
-    mainClass = "com.krickert.search.test.Application"
-}
 java {
     sourceCompatibility = JavaVersion.toVersion("21")
     targetCompatibility = JavaVersion.toVersion("21")
@@ -84,14 +79,6 @@ micronaut {
         sharedServer = true
     }
 }
-
-
-tasks.named<io.micronaut.gradle.docker.NativeImageDockerfile>("dockerfileNative") {
-    jdkVersion = "21"
-}
-
-
-
 
 sourceSets {
     main {
