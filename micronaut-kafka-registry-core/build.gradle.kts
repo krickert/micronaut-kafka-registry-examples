@@ -16,7 +16,6 @@ dependencies {
     implementation(libs.micronaut.test.junit5)
     implementation(libs.micronaut.grpc.runtime)
     implementation(libs.micronaut.serde.jackson)
-    implementation(libs.micronaut.aws.sdk.v2)
     implementation(libs.micronaut.kafka)
     implementation(libs.micronaut.test.resources.kafka)
 
@@ -93,7 +92,7 @@ publishing {
             pom {
                 name.set("Micronaut Kafka Registry Core")
                 description.set("Core library for Micronaut Kafka Registry")
-                url.set("https://github.com/yourusername/micronaut-kafka-registry")
+                url.set("https://github.com/krickert/micronaut-kafka-registry")
 
                 licenses {
                     license {
@@ -105,14 +104,14 @@ publishing {
                 developers {
                     developer {
                         id.set("krickert")
-                        name.set("Kevin Rickert")
+                        name.set("Kristian Rickert")
                     }
                 }
 
                 scm {
-                    connection.set("scm:git:git://github.com/yourusername/micronaut-kafka-registry.git")
+                    connection.set("scm:git:git://github.com/krickert/micronaut-kafka-registry.git")
                     developerConnection.set("scm:git:ssh://github.com/yourusername/micronaut-kafka-registry.git")
-                    url.set("https://github.com/yourusername/micronaut-kafka-registry")
+                    url.set("https://github.com/krickert/micronaut-kafka-registry")
                 }
             }
         }
