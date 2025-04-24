@@ -1,0 +1,58 @@
+[versions]
+# Micronaut versions
+micronaut = "4.7.0"
+micronautLibrary = "4.5.0"
+micronautTestResources = "4.5.0"
+
+# Protobuf and gRPC versions
+protobuf = "3.25.6"
+grpc = "1.72.0"
+
+# AWS versions
+glueSchemaRegistry = "1.1.23"
+mskIamAuth = "2.2.0"
+awsSdk = "2.30.31"
+
+# Test versions
+awaitility = "4.2.2"
+
+[libraries]
+# Micronaut
+micronaut-discovery-core = { module = "io.micronaut:micronaut-discovery-core" }
+micronaut-test-core = { module = "io.micronaut.test:micronaut-test-core", version.ref = "micronaut" }
+micronaut-test-junit5 = { module = "io.micronaut.test:micronaut-test-junit5" }
+micronaut-grpc-runtime = { module = "io.micronaut.grpc:micronaut-grpc-runtime" }
+micronaut-serde-jackson = { module = "io.micronaut.serde:micronaut-serde-jackson" }
+micronaut-serde-processor = { module = "io.micronaut.serde:micronaut-serde-processor" }
+micronaut-aws-sdk-v2 = { module = "io.micronaut.aws:micronaut-aws-sdk-v2" }
+micronaut-kafka = { module = "io.micronaut.kafka:micronaut-kafka" }
+micronaut-test-resources-kafka = { module = "io.micronaut.testresources:micronaut-test-resources-kafka" }
+
+# AWS
+glue-schema-registry-serde = { module = "software.amazon.glue:schema-registry-serde", version.ref = "glueSchemaRegistry" }
+aws-msk-iam-auth = { module = "software.amazon.msk:aws-msk-iam-auth", version.ref = "mskIamAuth" }
+aws-url-connection-client = { module = "software.amazon.awssdk:url-connection-client", version.ref = "awsSdk" }
+
+# Protobuf and gRPC
+protobuf-java = { module = "com.google.protobuf:protobuf-java", version.ref = "protobuf" }
+protobuf-java-util = { module = "com.google.protobuf:protobuf-java-util", version.ref = "grpc" }
+grpc-protobuf = { module = "io.grpc:grpc-protobuf", version.ref = "grpc" }
+grpc-stub = { module = "io.grpc:grpc-stub", version.ref = "grpc" }
+
+# Testing
+junit-jupiter = { module = "org.testcontainers:junit-jupiter" }
+testcontainers = { module = "org.testcontainers:testcontainers" }
+testcontainers-kafka = { module = "org.testcontainers:kafka" }
+awaitility = { module = "org.awaitility:awaitility", version.ref = "awaitility" }
+assertj-core = { module = "org.assertj:assertj-core" }
+
+# Other
+lombok = { module = "org.projectlombok:lombok" }
+logback-classic = { module = "ch.qos.logback:logback-classic" }
+javax-annotation-api = { module = "javax.annotation:javax.annotation-api" }
+jakarta-annotation-api = { module = "jakarta.annotation:jakarta.annotation-api" }
+
+[plugins]
+micronaut-library = { id = "io.micronaut.library", version.ref = "micronautLibrary" }
+micronaut-test-resources = { id = "io.micronaut.test-resources", version.ref = "micronautTestResources" }
+protobuf = { id = "com.google.protobuf", version = "0.9.5" }
