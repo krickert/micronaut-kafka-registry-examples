@@ -9,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,8 +28,7 @@ public class BomTest {
     void testBomConfiguration() {
         log.info("[DEBUG_LOG] Testing BOM configuration");
         assertNotNull(schemaRegistry, "SchemaRegistry should not be null");
-        assertTrue(schemaRegistry instanceof MotoSchemaRegistry, 
-                "Default SchemaRegistry should be MotoSchemaRegistry, but was: " + schemaRegistry.getClass().getName());
+        assertInstanceOf(MotoSchemaRegistry.class, schemaRegistry, "Default SchemaRegistry should be MotoSchemaRegistry, but was: " + schemaRegistry.getClass().getName());
         log.info("[DEBUG_LOG] SchemaRegistry is: {}", schemaRegistry.getClass().getName());
         
         // Verify that the registry is running
@@ -53,16 +51,13 @@ public class BomTest {
         ApplicationContext context = ApplicationContext.builder()
                 .properties(Map.of("schema.registry.type", "moto"))
                 .build();
-        context.start();
-        
-        try {
+
+        try (context) {
+            context.start();
             SchemaRegistry registry = context.getBean(SchemaRegistry.class);
             assertNotNull(registry, "SchemaRegistry should not be null");
-            assertTrue(registry instanceof MotoSchemaRegistry, 
-                    "Configured SchemaRegistry should be MotoSchemaRegistry, but was: " + registry.getClass().getName());
+            assertInstanceOf(MotoSchemaRegistry.class, registry, "Configured SchemaRegistry should be MotoSchemaRegistry, but was: " + registry.getClass().getName());
             log.info("[DEBUG_LOG] Configured SchemaRegistry is: {}", registry.getClass().getName());
-        } finally {
-            context.close();
         }
     }
 }

@@ -96,10 +96,10 @@ public class KafkaGlueSerdesIntegrationTest extends AbstractKafkaTest {
 
         records.forEach(r -> {
             log.info("Received record with key: {} and value: {}", r.key(), r.value());
-            Object value = r.value();
+            PipeDoc value = r.value();
             PipeDoc deserializedPipeDoc;
             if (value != null) {
-                deserializedPipeDoc = (PipeDoc) value;
+                deserializedPipeDoc = value;
             } else {
                throw new RuntimeException("Failed to unpack Any to PipeDoc: " + value);
             }

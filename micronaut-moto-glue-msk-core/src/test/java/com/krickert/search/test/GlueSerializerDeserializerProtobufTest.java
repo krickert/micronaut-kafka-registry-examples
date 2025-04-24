@@ -61,7 +61,7 @@ public class GlueSerializerDeserializerProtobufTest {
             if (deserialized != null) {
                 // In a real test, you would cast deserialized to your Protobuf message type
                 // and verify its fields.
-                log.info("Round-trip payload: " + deserialized.toString());
+                log.info("Round-trip payload: " + deserialized);
             }
         } catch (Exception e) {
             // In a mock environment, certain operations might not be fully implemented.

@@ -28,8 +28,7 @@ public class SchemaRegistryConfigurationTest {
     void testDefaultSchemaRegistryIsMoto() {
         log.info("[DEBUG_LOG] Testing default SchemaRegistry configuration");
         assertNotNull(schemaRegistry, "SchemaRegistry should not be null");
-        assertTrue(schemaRegistry instanceof MotoSchemaRegistry, 
-                "Default SchemaRegistry should be MotoSchemaRegistry, but was: " + schemaRegistry.getClass().getName());
+        assertInstanceOf(MotoSchemaRegistry.class, schemaRegistry, "Default SchemaRegistry should be MotoSchemaRegistry, but was: " + schemaRegistry.getClass().getName());
         log.info("[DEBUG_LOG] Default SchemaRegistry is: {}", schemaRegistry.getClass().getName());
     }
 
@@ -44,16 +43,13 @@ public class SchemaRegistryConfigurationTest {
         ApplicationContext context = ApplicationContext.builder()
                 .properties(config)
                 .build();
-        context.start();
-        
-        try {
+
+        try (context) {
+            context.start();
             SchemaRegistry registry = context.getBean(SchemaRegistry.class);
             assertNotNull(registry, "SchemaRegistry should not be null");
-            assertTrue(registry instanceof MotoSchemaRegistry, 
-                    "Configured SchemaRegistry should be MotoSchemaRegistry, but was: " + registry.getClass().getName());
+            assertInstanceOf(MotoSchemaRegistry.class, registry, "Configured SchemaRegistry should be MotoSchemaRegistry, but was: " + registry.getClass().getName());
             log.info("[DEBUG_LOG] Configured SchemaRegistry is: {}", registry.getClass().getName());
-        } finally {
-            context.close();
         }
     }
 }

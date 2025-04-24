@@ -74,7 +74,8 @@ public class PipeDocExample {
                 .build();
 
         // Build the PipeDoc with all fields populated.
-        PipeDoc pipeDoc = PipeDoc.newBuilder()
+
+        return PipeDoc.newBuilder()
                 .setId("pipeDoc123")
                 .setTitle("Example PipeDoc")
                 .setBody("This is an example document body.")
@@ -86,8 +87,6 @@ public class PipeDocExample {
                 .setCustomData(customData)
                 .setSemanticData(semanticData)
                 .build();
-
-        return pipeDoc;
     }
 
     public static void main(String[] args) {

@@ -60,12 +60,10 @@ public abstract class AbstractKafkaTest implements TestPropertyProvider {
         if (registry == null) {
             // Create a temporary ApplicationContext to get the SchemaRegistry
             ApplicationContext context = ApplicationContext.builder().build();
-            context.start();
-            try {
+            try (context) {
+                context.start();
                 SchemaRegistryFactory factory = context.getBean(SchemaRegistryFactory.class);
                 registry = factory.schemaRegistry("moto");
-            } finally {
-                context.close();
             }
         }
 
