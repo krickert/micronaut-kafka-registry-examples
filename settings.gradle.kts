@@ -18,5 +18,4 @@ dependencyResolutionManagement {
 // Include BOM and core projects
 include("bom")
 include("micronaut-kafka-registry-core")
-include("micronaut-kafka-registry-interface")
 include("micronaut-kafka-registry-moto")

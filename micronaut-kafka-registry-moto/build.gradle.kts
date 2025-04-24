@@ -11,7 +11,6 @@ dependencies {
     annotationProcessor(libs.lombok)
 
     // Schema Registry Interface
-    implementation(project(":micronaut-kafka-registry-interface"))
     implementation(project(":micronaut-kafka-registry-core"))
 
     // Micronaut

@@ -1,13 +1,12 @@
 package com.krickert.search.test;
 
 import com.krickert.search.model.pipe.PipeDoc;
-import com.krickert.search.test.kafka.AbstractKafkaTest;
+import com.krickert.search.test.kafka.AbstractKafkaIntegrationTest;
 import io.micronaut.configuration.kafka.annotation.KafkaClient;
 import io.micronaut.configuration.kafka.annotation.KafkaListener;
 import io.micronaut.configuration.kafka.annotation.Topic;
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest;
 import jakarta.inject.Inject;
-import org.junit.jupiter.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,12 +15,12 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+/**
+ * Concrete implementation of AbstractKafkaIntegrationTest for testing Kafka integration with AWS Glue Schema Registry.
+ * This class tests producing and consuming PipeDoc messages with Kafka using the Moto Schema Registry.
+ */
 @MicronautTest(environments = "test", transactional = false)
-public class KafkaGlueIntegrationTest extends AbstractKafkaTest {
+public class KafkaGlueIntegrationTest extends AbstractKafkaIntegrationTest<PipeDoc> {
     private static final Logger LOG = LoggerFactory.getLogger(KafkaGlueIntegrationTest.class);
     private static final String TOPIC = "test-pipedoc";
 
@@ -31,22 +30,19 @@ public class KafkaGlueIntegrationTest extends AbstractKafkaTest {
     @Inject
     TestPipeDocConsumer consumer;
 
-    @Test
-    void testProduceAndConsumeMessage() throws Exception {
-        // Create test PipeDoc
-        PipeDoc testDoc = PipeDocExample.createFullPipeDoc();
+    @Override
+    protected PipeDoc createTestMessage() {
+        return PipeDocExample.createFullPipeDoc();
+    }
 
-        // Produce the message
-        producer.sendPipeDoc(testDoc).get(10, TimeUnit.SECONDS);
-        LOG.info("Produced test document: {}", testDoc);
+    @Override
+    protected MessageProducer<PipeDoc> getProducer() {
+        return producer::sendPipeDoc;
+    }
 
-        // Wait for the consumer to receive the message
-        PipeDoc receivedDoc = consumer.getNextMessage(10);
-        LOG.info("Received document: {}", receivedDoc);
-
-        // Verify the received message
-        assertNotNull(receivedDoc, "Should have received a message");
-        assertEquals(testDoc, receivedDoc, "Received message should match sent message");
+    @Override
+    protected MessageConsumer<PipeDoc> getConsumer() {
+        return consumer;
     }
 
     // Producer client
@@ -58,7 +54,7 @@ public class KafkaGlueIntegrationTest extends AbstractKafkaTest {
 
     // Consumer implementation
     @KafkaListener(groupId = "test-group")
-    public static class TestPipeDocConsumer {
+    public static class TestPipeDocConsumer implements MessageConsumer<PipeDoc> {
         private final List<PipeDoc> receivedMessages = new ArrayList<>();
         private final CompletableFuture<PipeDoc> nextMessage = new CompletableFuture<>();
 
@@ -71,10 +67,12 @@ public class KafkaGlueIntegrationTest extends AbstractKafkaTest {
             }
         }
 
+        @Override
         public PipeDoc getNextMessage(long timeoutSeconds) throws Exception {
             return nextMessage.get(timeoutSeconds, TimeUnit.SECONDS);
         }
 
+        @Override
         public List<PipeDoc> getReceivedMessages() {
             synchronized (receivedMessages) {
                 return new ArrayList<>(receivedMessages);

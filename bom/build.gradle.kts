@@ -23,10 +23,6 @@ dependencies {
     constraints {
         // Core project
         api(project(":"))
-
-        // Schema Registry Interface
-        api(project(":micronaut-kafka-registry-interface"))
-
         // Schema Registry Moto Implementation
         api(project(":micronaut-kafka-registry-moto"))
 
